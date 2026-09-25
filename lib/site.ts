@@ -1,7 +1,18 @@
+const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL
+const vercelPreview = process.env.VERCEL_URL
+
+export const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (vercelProd
+    ? `https://${vercelProd}`
+    : vercelPreview
+      ? `https://${vercelPreview}`
+      : 'https://forma-home.ru')
+
 export const site = {
   name: 'FORMA HOME',
   tagline: 'Студия дизайна интерьеров',
-  url: 'https://forma-home.ru',
+  url: siteUrl,
   description:
     'FORMA HOME — студия дизайна интерьеров и архитектуры полного цикла. Проектируем частные резиденции и квартиры, в которых архитектура, свет и фактура работают как единая композиция.',
   keywords: [

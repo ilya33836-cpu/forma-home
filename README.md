@@ -68,3 +68,35 @@ node scripts/finalize-images.mjs    # перенести отобранные ф
 Скопируйте `.env.example` в `.env.local` и задайте `RESEND_API_KEY`,
 `CONTACT_EMAIL_TO`, `CONTACT_EMAIL_FROM`. Без них `/api/contact` валидирует заявку
 и логирует её, но письмо не отправляет.
+
+## Деплой на Vercel
+
+Репозиторий привязан к проекту Vercel через `.vercel/repo.json`, поэтому каждый push в `main`
+собирает прод, а push в другую ветку — preview.
+
+```bash
+npm i -g vercel
+vercel login
+vercel link --repo     # привязка к репозиторию
+vercel deploy -y       # разовый деплой
+```
+
+Переменные окружения задаются в Vercel Dashboard → Settings → Environment Variables:
+
+| Переменная | Нужна для |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | канонический домен в метаданных, sitemap и robots |
+| `RESEND_API_KEY` | отправка заявок с формы |
+| `CONTACT_EMAIL_TO` | адрес получателя заявок |
+| `CONTACT_EMAIL_FROM` | адрес отправителя (домен должен быть подтверждён в Resend) |
+
+Если `NEXT_PUBLIC_SITE_URL` не задан, на Vercel подставляется
+`VERCEL_PROJECT_PRODUCTION_URL`, а вне Vercel — `https://forma-home.ru`.
+Значение читается на этапе сборки, поэтому после добавления переменной нужен редеплой.
+
+В `next.config.ts` выставлены заголовки безопасности: HSTS, `X-Content-Type-Options`,
+`X-Frame-Options`, `Referrer-Policy` и `Permissions-Policy`.
+
+Сборка: 15 статических страниц, First Load JS главной — 167 kB. 3D-сцена вынесена в отдельный
+чанк и грузится только при приближении секции, поэтому на первый экран не влияет.
+
