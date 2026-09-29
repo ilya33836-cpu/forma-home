@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, ContactShadows, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import { Minus, Plus, RotateCcw } from 'lucide-react'
+import { site } from '@/lib/site'
 
 type RoomProps = {
   tone: string
@@ -242,7 +243,7 @@ export default function RoomViewer({
     <div className={`relative overflow-hidden bg-sand-200 ${className}`}>
       {poster && !ready && (
         <img
-          src={poster}
+          src={`${site.basePath}${poster}`}
           alt=""
           aria-hidden
           className="absolute inset-0 size-full object-cover"
