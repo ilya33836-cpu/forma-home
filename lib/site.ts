@@ -1,5 +1,10 @@
 const isStatic = process.env.STATIC_BUILD === '1'
-const basePath = process.env.BASE_PATH || (isStatic ? '/forma-home' : '')
+
+// Важно: basePath читается из NEXT_PUBLIC_BASE_PATH, потому что Next инлайнит
+// в клиентский бандл только переменные с префиксом NEXT_PUBLIC_. Если брать
+// значение из STATIC_BUILD, на клиенте получится пустая строка и все пути,
+// собираемые в компонентах (постеры 3D, inline-фоны), потеряют префикс.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? (isStatic ? '/forma-home' : '')
 
 const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const vercelPreview = process.env.VERCEL_URL

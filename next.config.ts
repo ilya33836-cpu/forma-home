@@ -5,7 +5,7 @@ import type { NextConfig } from 'next'
 //   STATIC_BUILD=1 -> GitHub Pages (output: 'export', basePath, без оптимизации картинок)
 //   без переменной  -> Vercel (серверный рендер, работает /api/contact, работают заголовки)
 const isStatic = process.env.STATIC_BUILD === '1'
-const basePath = process.env.BASE_PATH || (isStatic ? '/forma-home' : '')
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || (isStatic ? '/forma-home' : '')
 
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },

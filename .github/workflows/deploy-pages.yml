@@ -39,6 +39,9 @@ jobs:
         env:
           # Включает output: 'export' и basePath в next.config.ts
           STATIC_BUILD: '1'
+          # Должен быть с префиксом NEXT_PUBLIC_, иначе значение не попадёт
+          # в клиентский бандл и пути в компонентах потеряют basePath
+          NEXT_PUBLIC_BASE_PATH: '/forma-home'
           NEXT_PUBLIC_WEB3FORMS_KEY: ${{ vars.WEB3FORMS_KEY }}
         run: npm run build
 
