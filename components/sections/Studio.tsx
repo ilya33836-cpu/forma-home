@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
@@ -77,11 +77,11 @@ export default function Studio() {
                     i === 2 ? 'aspect-[16/9]' : 'aspect-[4/3] lg:aspect-[4/5]'
                   }`}
                 >
-                  <Image
+                  <Img
                     src={s.src}
                     alt={s.alt}
                     fill
-                    sizes={i === 2 ? '(max-width: 640px) 100vw, 40vw' : '(max-width: 640px) 100vw, 30vw'}
+                    sizes={i === 2 ? '(max-width: 640px) calc(100vw - 2.5rem), 40vw' : '(max-width: 640px) calc(100vw - 2.5rem), 30vw'}
                     className="object-cover"
                   />
                 </figure>

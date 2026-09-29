@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Reveal from '@/components/Reveal'
 import ContactForm from '@/components/ContactForm'
 import { site } from '@/lib/site'
@@ -43,12 +43,12 @@ export default function ContactPage() {
           <div className="grid gap-4 sm:grid-cols-12 sm:gap-5">
             <Reveal className="sm:col-span-7">
               <figure className="relative aspect-[4/3] w-full overflow-hidden rounded-tile bg-sand-200">
-                <Image
+                <Img
                   src="/images/studio/review.jpg"
                   alt="Согласование проекта в студии"
                   fill
                   priority
-                  sizes="(max-width: 640px) 100vw, 58vw"
+                  sizes="(max-width: 640px) calc(100vw - 2.5rem), 58vw"
                   className="object-cover"
                 />
               </figure>

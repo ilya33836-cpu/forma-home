@@ -2,7 +2,7 @@ import type { NextConfig } from 'next'
 
 // Статическая сборка включается переменной окружения, чтобы один репозиторий
 // обслуживал два хостинга:
-//   STATIC_BUILD=1 -> GitHub Pages (output: 'export', basePath, без оптимизации картинок)
+//   STATIC_BUILD=1 -> GitHub Pages (output: 'export', basePath, без заголовков)
 //   без переменной  -> Vercel (серверный рендер, работает /api/contact, работают заголовки)
 const isStatic = process.env.STATIC_BUILD === '1'
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || (isStatic ? '/forma-home' : '')
@@ -24,18 +24,17 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   basePath,
   images: {
-    // На статическом хостинге оптимизатора Next нет. unoptimized не годится:
-    // в этом режиме next/image пишет src="/images/..." без учёта basePath,
-    // и на GitHub Pages все картинки отдают 404. Поэтому задаём свой лоадер,
-    // который просто дописывает basePath — файлы уже подготовлены заранее.
-    ...(isStatic
-      ? {
-          loader: 'custom' as const,
-          loaderFile: './lib/image-loader.ts',
-        }
-      : { formats: ['image/avif', 'image/webp'] }),
-    deviceSizes: [400, 640, 828, 1080, 1280, 1600, 1920, 2560],
-    imageSizes: [64, 96, 128, 200, 256, 320, 384],
+    // Оптимизатор Next на обоих хостингах не нужен: варианты нужной ширины
+    // считаются заранее скриптом scripts/build-images.mjs в public/images/opt.
+    // Свой лоадер подставляет basePath (иначе на Pages картинки отдают 404)
+    // и выбирает готовый файл вместо исходника — на телефоне это ~40 КБ
+    // вместо 400–1300 КБ. Списки ширин совпадают с WIDTHS в том скрипте.
+    loader: 'custom' as const,
+    loaderFile: './lib/image-loader.ts',
+    deviceSizes: [400, 640, 828, 1080, 1280, 1600],
+    // Только реально существующие варианты: иначе next/image вписывает в
+    // srcset несколько одинаковых файлов с разными дескрипторами.
+    imageSizes: [320],
     // Внешние хосты не используются: все изображения лежат в public/images.
   },
   experimental: {

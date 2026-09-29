@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import Img from '@/components/Img'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Reveal from '@/components/Reveal'
@@ -26,11 +26,11 @@ export default function Testimonials() {
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute inset-0"
                   >
-                    <Image
+                    <Img
                       src="/images/home/testimonial.jpg"
                       alt="Гостиная с мягкой зоной у окна"
                       fill
-                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      sizes="(max-width: 1024px) calc(100vw - 2.5rem), 40vw"
                       className="object-cover"
                     />
                   </motion.div>

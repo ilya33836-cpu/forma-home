@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
@@ -41,12 +41,12 @@ export default function ProjectsPage() {
                       i % 2 === 0 ? 'aspect-[4/3] lg:aspect-[16/10]' : 'aspect-[4/5]'
                     }`}
                   >
-                    <Image
+                    <Img
                       src={p.cover.src}
                       alt={p.cover.alt}
                       fill
                       priority={i === 0}
-                      sizes={i % 2 === 0 ? '(max-width: 1024px) 100vw, 58vw' : '(max-width: 1024px) 100vw, 42vw'}
+                      sizes={i % 2 === 0 ? '(max-width: 1024px) calc(100vw - 2.5rem), 58vw' : '(max-width: 1024px) calc(100vw - 2.5rem), 42vw'}
                       className="object-cover transition-transform duration-[1.4s] ease-premium group-hover:scale-[1.04]"
                     />
                   </div>

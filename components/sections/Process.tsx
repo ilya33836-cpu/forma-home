@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Reveal from '@/components/Reveal'
 import { process } from '@/lib/content'
 
@@ -35,11 +35,11 @@ export default function Process() {
           {IMAGES.map((im, i) => (
             <Reveal key={im.src} delay={i * 0.07}>
               <figure className="relative aspect-[4/3] w-full overflow-hidden rounded-tile bg-sand-200">
-                <Image
+                <Img
                   src={im.src}
                   alt={im.alt}
                   fill
-                  sizes="(max-width: 640px) 100vw, 32vw"
+                  sizes="(max-width: 640px) calc(100vw - 2.5rem), 32vw"
                   className="object-cover"
                 />
               </figure>

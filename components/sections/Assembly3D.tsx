@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import Reveal from '@/components/Reveal'
+import { imageUrl, blurFor } from '@/lib/image'
 
 const LazyRoomViewer = dynamic(() => import('@/components/LazyRoomViewer'), { ssr: false })
 
@@ -14,21 +15,23 @@ const PALETTES = [
   { name: 'Латунь', tone: '#9C8250' },
 ]
 
+const POSTER = '/images/projects/apartment/gallery-4.jpg'
+
 export default function Assembly3D() {
   const ref = useRef<HTMLElement>(null)
-  const [active, setActive] = useState(false)
+  const [near, setNear] = useState(false)
   const [i, setI] = useState(0)
 
   useEffect(() => {
     const el = ref.current
     if (!el || !('IntersectionObserver' in window)) {
-      setActive(true)
+      setNear(true)
       return
     }
     const io = new IntersectionObserver(
       (es) => {
         if (es.some((e) => e.isIntersecting)) {
-          setActive(true)
+          setNear(true)
           io.disconnect()
         }
       },
@@ -88,15 +91,28 @@ export default function Assembly3D() {
 
           <Reveal delay={0.1} y={32} className="lg:col-span-8">
             <div className="aspect-[4/3] w-full overflow-hidden rounded-tile bg-[#0F0F0E] sm:aspect-[16/10]">
-              {active ? (
+              {near ? (
                 <LazyRoomViewer
                   tone={PALETTES[i].tone}
                   pieces={i}
                   roomName="Сборка отделки"
+                  poster={POSTER}
                   className="size-full"
                 />
               ) : (
-                <div className="size-full bg-[#0F0F0E]" />
+                <img
+                  src={imageUrl(POSTER, 1080)}
+                  alt=""
+                  aria-hidden
+                  loading="lazy"
+                  decoding="async"
+                  style={
+                    blurFor(POSTER)
+                      ? { backgroundImage: `url(${blurFor(POSTER)})`, backgroundSize: 'cover' }
+                      : undefined
+                  }
+                  className="size-full object-cover opacity-70"
+                />
               )}
             </div>
           </Reveal>

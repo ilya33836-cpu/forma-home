@@ -1,11 +1,11 @@
 ﻿'use client'
 
-import { useRef, useState, Suspense, useEffect } from 'react'
+import { Component, useEffect, useRef, useState, Suspense, type ReactNode } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, ContactShadows, Environment } from '@react-three/drei'
+import { OrbitControls, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 import { Minus, Plus, RotateCcw } from 'lucide-react'
-import { site } from '@/lib/site'
+import { imageUrl } from '@/lib/image'
 
 type RoomProps = {
   tone: string
@@ -177,7 +177,7 @@ function Room({ tone, pieces }: RoomProps) {
         scale={12}
         blur={2.6}
         far={4.2}
-        resolution={512}
+        resolution={256}
         color="#3A342C"
       />
     </group>
@@ -198,13 +198,18 @@ function Scene({ tone, pieces, zoom }: RoomProps & { zoom: number }) {
   return (
     <>
       <CameraRig zoom={zoom} />
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[-2.5, 4, -4]} intensity={1.6} castShadow shadow-mapSize={[1024, 1024]} />
+      <ambientLight intensity={0.75} />
+      <hemisphereLight args={['#FFF4E2', '#B9B2A6', 0.5]} />
+      <directionalLight
+        position={[-2.5, 4, -4]}
+        intensity={1.6}
+        castShadow
+        shadow-mapSize={[512, 512]}
+      />
       <directionalLight position={[3.5, 3, 4]} intensity={0.35} color="#FFEBD2" />
       <pointLight position={[-0.75, 2.05, 0.55]} intensity={5} distance={5.5} color="#FFE7C0" />
       <Suspense fallback={null}>
         <Room tone={tone} pieces={pieces} />
-        <Environment preset="apartment" />
       </Suspense>
       <OrbitControls
         enablePan={false}
@@ -229,6 +234,18 @@ type Props = {
   poster?: string
 }
 
+// Контекст может не подняться даже после проверки в useWebGLAllowed: драйвер
+// падает уже на создании. Тогда показываем постер, а не пустой серый блок.
+class GLBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children
+  }
+}
+
 export default function RoomViewer({
   tone = '#DED7CB',
   pieces = 0,
@@ -238,30 +255,51 @@ export default function RoomViewer({
 }: Props) {
   const [zoom, setZoom] = useState(5.8)
   const [ready, setReady] = useState(false)
+  const wrap = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(true)
+
+  // Вне экрана сцену не рисуем: она анимируется постоянно, а пользователь
+  // всё равно её не видит — и GPU, и батарея тратятся впустую.
+  useEffect(() => {
+    const el = wrap.current
+    if (!el || !('IntersectionObserver' in window)) return
+    const io = new IntersectionObserver((es) => setVisible(es.some((e) => e.isIntersecting)), {
+      rootMargin: '120px 0px',
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  const posterImg = poster ? (
+    <img
+      src={imageUrl(poster, 1080)}
+      alt=""
+      aria-hidden
+      decoding="async"
+      className="absolute inset-0 size-full object-cover"
+    />
+  ) : null
 
   return (
-    <div className={`relative overflow-hidden bg-sand-200 ${className}`}>
-      {poster && !ready && (
-        <img
-          src={`${site.basePath}${poster}`}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 size-full object-cover"
-        />
-      )}
+    <div ref={wrap} className={`relative overflow-hidden bg-sand-200 ${className}`}>
+      {posterImg && !ready ? posterImg : null}
 
-      <Canvas
-        shadows
-        dpr={[1, 1.75]}
-        camera={{ position: [zoom * 0.6, 1.72, zoom * 0.76], fov: 40 }}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        onCreated={({ gl }) => {
-          gl.setClearColor('#E9E5DD', 0)
-          requestAnimationFrame(() => setReady(true))
-        }}
-      >
-        <Scene tone={tone} pieces={pieces} zoom={zoom} />
-      </Canvas>
+      <GLBoundary fallback={posterImg}>
+        <Canvas
+          shadows
+          // 1.5 — потолок: выше разницы не видно, а пикселей вчетверо больше.
+          dpr={[1, 1.5]}
+          frameloop={visible ? 'always' : 'never'}
+          camera={{ position: [zoom * 0.6, 1.72, zoom * 0.76], fov: 40 }}
+          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+          onCreated={({ gl }) => {
+            gl.setClearColor('#E9E5DD', 0)
+            requestAnimationFrame(() => setReady(true))
+          }}
+        >
+          <Scene tone={tone} pieces={pieces} zoom={zoom} />
+        </Canvas>
+      </GLBoundary>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-7">
         <p className="micro hidden rounded-soft bg-sand/80 px-3 py-2 text-ink/60 backdrop-blur-sm sm:inline-block">

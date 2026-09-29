@@ -14,5 +14,6 @@ yarn-error.log*
 next-env.d.ts
 scripts/out
 tmp
+public/images/opt
 
 .vercel

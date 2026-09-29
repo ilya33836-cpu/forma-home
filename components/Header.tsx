@@ -21,15 +21,39 @@ export default function Header({ nav, phone }: Props) {
 
   useEffect(() => {
     let last = window.scrollY
-    const onScroll = () => {
+    let frame = 0
+    let scrolledState = false
+    let hiddenState = false
+
+    // Событие скролла на телефоне приходит чаще, чем браузер рисует кадр.
+    // Без requestAnimationFrame на каждый вызов React ререндерит шапку, и эти
+    // ререндеры попадают в тот же кадр, что и скролл, — отсюда дёргание.
+    const apply = () => {
+      frame = 0
       const y = window.scrollY
-      setScrolled(y > 24)
-      setHidden(y > last && y > 240)
+      const nextScrolled = y > 24
+      const nextHidden = y > last && y > 240
+      if (nextScrolled !== scrolledState) {
+        scrolledState = nextScrolled
+        setScrolled(nextScrolled)
+      }
+      if (nextHidden !== hiddenState) {
+        hiddenState = nextHidden
+        setHidden(nextHidden)
+      }
       last = y
     }
-    onScroll()
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(apply)
+    }
+
+    apply()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [])
 
   useEffect(() => setOpen(false), [pathname])
@@ -59,7 +83,7 @@ export default function Header({ nav, phone }: Props) {
       <header
         className={`fixed inset-x-0 top-0 z-[80] transition-all duration-700 ease-premium ${
           hidden ? '-translate-y-full' : 'translate-y-0'
-        } ${scrolled ? 'bg-sand/85 backdrop-blur-xl' : 'bg-transparent'}`}
+        } ${scrolled ? 'bg-sand/95 backdrop-blur-xl lg:bg-sand/85' : 'bg-transparent'}`}
       >
         <div
           className={`shell flex items-center justify-between transition-all duration-700 ease-premium ${

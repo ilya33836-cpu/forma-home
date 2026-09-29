@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
@@ -58,23 +58,23 @@ export default function AboutPage() {
           <div className="grid gap-4 sm:grid-cols-12 sm:gap-5">
             <Reveal className="sm:col-span-7">
               <figure className="relative aspect-[4/3] w-full overflow-hidden rounded-tile bg-sand-200">
-                <Image
+                <Img
                   src="/images/studio/space.jpg"
                   alt="Рабочее место архитектора"
                   fill
                   priority
-                  sizes="(max-width: 640px) 100vw, 58vw"
+                  sizes="(max-width: 640px) calc(100vw - 2.5rem), 58vw"
                   className="object-cover"
                 />
               </figure>
             </Reveal>
             <Reveal delay={0.06} className="sm:col-span-5">
               <figure className="relative aspect-[4/3] w-full overflow-hidden rounded-tile bg-sand-200 sm:h-full sm:aspect-auto">
-                <Image
+                <Img
                   src="/images/studio/team.jpg"
                   alt="Команда студии за обсуждением"
                   fill
-                  sizes="(max-width: 640px) 100vw, 42vw"
+                  sizes="(max-width: 640px) calc(100vw - 2.5rem), 42vw"
                   className="object-cover"
                 />
               </figure>

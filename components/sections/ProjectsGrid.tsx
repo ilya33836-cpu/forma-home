@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import Img from '@/components/Img'
 import { ArrowUpRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
 import { projects } from '@/lib/projects'
@@ -43,11 +43,11 @@ export default function ProjectsGrid() {
                   <div className={flip ? 'lg:order-2 lg:col-span-5' : 'lg:col-span-7'}>
                     <Link href={`/projects/${p.slug}`} data-cursor-label="Смотреть" className="group block">
                       <div className="relative aspect-[4/3] w-full overflow-hidden bg-sand-200 lg:aspect-[16/10]">
-                        <Image
+                        <Img
                           src={p.cover.src}
                           alt={p.cover.alt}
                           fill
-                          sizes="(max-width: 1024px) 100vw, 58vw"
+                          sizes="(max-width: 1024px) calc(100vw - 2.5rem), 58vw"
                           className="object-cover transition-transform duration-[1.4s] ease-premium group-hover:scale-[1.04]"
                         />
                         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />

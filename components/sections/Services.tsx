@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
@@ -26,11 +26,11 @@ export default function Services() {
             </Reveal>
             <Reveal delay={0.15}>
               <div className="relative mt-10 aspect-[4/3] w-full overflow-hidden rounded-tile bg-sand-200">
-                <Image
+                <Img
                   src="/images/studio/materials.jpg"
                   alt="Образцы отделочных материалов на мраморной поверхности"
                   fill
-                  sizes="(max-width: 1024px) 100vw, 30vw"
+                  sizes="(max-width: 1024px) calc(100vw - 2.5rem), 30vw"
                   className="object-cover"
                 />
               </div>

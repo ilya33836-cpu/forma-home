@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Link from 'next/link'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
@@ -112,12 +112,12 @@ export default async function ProjectPage({ params }: Params) {
       <section className="bg-sand pb-20 sm:pb-28">
         <div className="shell">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-tile bg-sand-200 sm:aspect-[3/2]">
-            <Image
+            <Img
               src={p.cover.src}
               alt={p.cover.alt}
               fill
               priority
-              sizes="100vw"
+              sizes="calc(100vw - 2.5rem)"
               className="object-cover"
             />
           </div>
@@ -190,11 +190,11 @@ export default async function ProjectPage({ params }: Params) {
                     i === 0 ? 'aspect-[16/10]' : 'aspect-[4/3]'
                   }`}
                 >
-                  <Image
+                  <Img
                     src={g.src}
                     alt={g.alt}
                     fill
-                    sizes={i === 0 ? '(max-width: 1024px) 100vw, 66vw' : '(max-width: 1024px) 100vw, 33vw'}
+                    sizes={i === 0 ? '(max-width: 1024px) calc(100vw - 2.5rem), 66vw' : '(max-width: 1024px) calc(100vw - 2.5rem), 33vw'}
                     className="object-cover"
                   />
                 </figure>

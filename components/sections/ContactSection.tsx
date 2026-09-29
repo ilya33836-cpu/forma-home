@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/components/Img'
 import ContactForm from '@/components/ContactForm'
 import Reveal from '@/components/Reveal'
 import { site } from '@/lib/site'
@@ -25,11 +25,11 @@ export default function ContactSection() {
 
             <Reveal delay={0.15}>
               <div className="relative mt-10 aspect-[4/3] w-full overflow-hidden rounded-tile bg-sand-200">
-                <Image
+                <Img
                   src="/images/home/contact-texture.jpg"
                   alt="Образцы материалов на светлой поверхности"
                   fill
-                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  sizes="(max-width: 1024px) calc(100vw - 2.5rem), 40vw"
                   className="object-cover"
                 />
               </div>

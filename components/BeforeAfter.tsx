@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
+import Img from '@/components/Img'
 import { MoveHorizontal } from 'lucide-react'
 import type { ImageAsset } from '@/lib/projects'
 
@@ -45,22 +45,20 @@ export default function BeforeAfter({ before, after, className = '' }: Props) {
         update(e.clientX)
       }}
     >
-      <Image
+      <Img
         src={after.src}
         alt={after.alt}
         fill
-        sizes="(max-width: 1024px) 100vw, 66vw"
-        quality={82}
+        sizes="(max-width: 1024px) calc(100vw - 2.5rem), 66vw"
         className="object-cover"
       />
 
       <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-        <Image
+        <Img
           src={before.src}
           alt={before.alt}
           fill
-          sizes="(max-width: 1024px) 100vw, 66vw"
-          quality={82}
+          sizes="(max-width: 1024px) calc(100vw - 2.5rem), 66vw"
           className="object-cover grayscale"
         />
       </div>

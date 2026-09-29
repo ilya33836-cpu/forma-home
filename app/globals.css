@@ -26,6 +26,16 @@
     font-family: var(--font-manrope), system-ui, sans-serif;
     font-feature-settings: 'kern', 'liga';
     overflow-x: clip;
+    /* Прокрутка инерционная, но без rubber-band: на iOS «оттягивание» страницы
+       рядом с краем ломает фиксированную шапку и добавляет пустые кадры. */
+    overscroll-behavior-y: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Мелкие тексты в .micro — 11px: iOS в портрете подставляет свой кегль и
+     раздувает интервалы, из-за чего строка перестаёт помещаться в сетку. */
+  .micro {
+    text-size-adjust: none;
   }
 
   ::selection {

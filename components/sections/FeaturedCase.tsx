@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
+import Img from '@/components/Img'
 import { ArrowUpRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
 import { projects } from '@/lib/projects'
@@ -69,7 +69,7 @@ export default function FeaturedCase() {
         <div className="order-1 lg:order-2">
           <Reveal y={0} className="h-full">
             <div className="relative h-[62vh] w-full bg-ink lg:h-full lg:min-h-[42rem]">
-              <Image
+              <Img
                 src={p.gallery[4].src}
                 alt={p.gallery[4].alt}
                 fill

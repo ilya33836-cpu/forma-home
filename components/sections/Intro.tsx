@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/components/Img'
 import Reveal from '@/components/Reveal'
 import ParallaxImage from '@/components/ParallaxImage'
 
@@ -56,14 +56,14 @@ export default function Intro() {
             src="/images/home/intro.jpg"
             alt="Светлая штукатурка стены и сухая ветка в вазе"
             className="aspect-[4/3] sm:col-span-5 sm:aspect-[3/4]"
-            sizes="(max-width: 640px) 100vw, 42vw"
+            sizes="(max-width: 640px) calc(100vw - 2.5rem), 42vw"
           />
           <div className="sm:col-span-7 sm:grid sm:grid-cols-7 sm:gap-5">
             <ParallaxImage
               src="/images/home/concept.jpg"
               alt="Изогнутая бетонная плоскость с теневым светом"
               className="aspect-[4/3] sm:col-span-4 sm:aspect-auto sm:h-full sm:min-h-[16rem]"
-              sizes="(max-width: 640px) 100vw, 30vw"
+              sizes="(max-width: 640px) calc(100vw - 2.5rem), 30vw"
               parallax={8}
             />
             <div className="flex flex-col justify-end sm:col-span-3 sm:pl-3">
@@ -75,11 +75,11 @@ export default function Intro() {
                 </p>
                 <figure className="mt-8">
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-sand-200">
-                    <Image
+                    <Img
                       src="/images/home/light.jpg"
                       alt="Мягкий дневной свет сквозь льняные шторы"
                       fill
-                      sizes="(max-width: 640px) 100vw, 20vw"
+                      sizes="(max-width: 640px) calc(100vw - 2.5rem), 20vw"
                       className="object-cover"
                     />
                   </div>

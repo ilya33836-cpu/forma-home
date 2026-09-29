@@ -7,16 +7,20 @@ import Cursor from '@/components/Cursor'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
+// Начертания берём ровно те, что использует вёрстка: light, обычный,
+// medium и semibold для Manrope, light + обычный (прямым и курсивом)
+// для Cormorant. Каждое лишнее начертание — это отдельный файл, который
+// next/font кладёт в прелоад и который телефон скачивает на старте страницы.
 const manrope = Manrope({
   subsets: ['latin', 'cyrillic'],
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['300', '400', '500', '600'],
   variable: '--font-manrope',
   display: 'swap',
 })
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin', 'cyrillic'],
-  weight: ['300', '400', '500', '600'],
+  weight: ['300', '400'],
   style: ['normal', 'italic'],
   variable: '--font-cormorant',
   display: 'swap',
