@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
+import { site } from '@/lib/site'
 
 const RoomViewer = dynamic(() => import('./RoomViewer'), { ssr: false })
 
@@ -46,7 +47,11 @@ export default function LazyRoomViewer({ className = '', poster, ...rest }: Prop
           className="size-full bg-sand-200"
           style={
             poster
-              ? { backgroundImage: `url(${poster})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+              ? {
+                  backgroundImage: `url(${site.basePath}${poster})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }
               : undefined
           }
         />

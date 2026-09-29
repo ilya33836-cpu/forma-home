@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
 import Reveal from '@/components/Reveal'
+import { site } from '@/lib/site'
 
 const LazyRoomViewer = dynamic(() => import('@/components/LazyRoomViewer'), { ssr: false })
 
@@ -65,7 +66,7 @@ export default function Viewer3D() {
               <div
                 className="size-full bg-sand-200"
                 style={{
-                  backgroundImage: 'url(/images/projects/apartment/gallery-2.jpg)',
+                  backgroundImage: `url(${site.basePath}/images/projects/apartment/gallery-2.jpg)`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
