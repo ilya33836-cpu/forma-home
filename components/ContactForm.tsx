@@ -20,16 +20,38 @@ export default function ContactForm({ compact = false }: { compact?: boolean }) 
     e.preventDefault()
     setStatus('sending')
     setError('')
-    const data = Object.fromEntries(new FormData(e.currentTarget))
+
+    const form = e.currentTarget
+    const data = Object.fromEntries(new FormData(form))
+    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY
+
+    if (!accessKey) {
+      setStatus('error')
+      setError(
+        'Форма временно недоступна. Напишите нам на почту — ответим в течение рабочего дня.',
+      )
+      return
+    }
+
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ ...data, type, budget }),
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `Заявка с сайта — ${data.name}`,
+          from_name: data.name as string,
+          reply_to: data.email as string,
+          ...data,
+          type,
+          budget,
+          message: data.message || 'Без комментария',
+        }),
       })
-      if (!res.ok) throw new Error('bad status')
+      const json = await res.json().catch(() => null)
+      if (!res.ok || !json?.success) throw new Error('submit failed')
       setStatus('ok')
-      e.currentTarget.reset()
+      form.reset()
     } catch {
       setStatus('error')
       setError('Не удалось отправить заявку. Напишите нам на почту — ответим в течение дня.')

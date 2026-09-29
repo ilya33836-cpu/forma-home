@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Позволяет workflow включать Pages и деплоить артефакт
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Один деплой за раз: новый пуш отменяет предыдущий
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build static site
+        env:
+          # Включает output: 'export' и basePath в next.config.ts
+          STATIC_BUILD: '1'
+          NEXT_PUBLIC_WEB3FORMS_KEY: ${{ vars.WEB3FORMS_KEY }}
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

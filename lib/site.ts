@@ -1,3 +1,6 @@
+const isStatic = process.env.STATIC_BUILD === '1'
+const basePath = process.env.BASE_PATH || (isStatic ? '/forma-home' : '')
+
 const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const vercelPreview = process.env.VERCEL_URL
 
@@ -7,12 +10,16 @@ export const siteUrl =
     ? `https://${vercelProd}`
     : vercelPreview
       ? `https://${vercelPreview}`
-      : 'https://forma-home.ru')
+      : isStatic
+        ? 'https://ilya33836-cpu.github.io'
+        : 'https://forma-home.ru')
 
 export const site = {
   name: 'FORMA HOME',
   tagline: 'Студия дизайна интерьеров',
   url: siteUrl,
+  basePath,
+  isStatic,
   description:
     'FORMA HOME — студия дизайна интерьеров и архитектуры полного цикла. Проектируем частные резиденции и квартиры, в которых архитектура, свет и фактура работают как единая композиция.',
   keywords: [

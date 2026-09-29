@@ -63,40 +63,78 @@ node scripts/finalize-images.mjs    # перенести отобранные ф
 отдельным чанком только когда секция приближается к зоне видимости, поэтому первый экран
 не зависит от WebGL. Если сцена не инициализировалась, показывается статический постер.
 
-## Почта
+## Почта и форма заявки
 
-Скопируйте `.env.example` в `.env.local` и задайте `RESEND_API_KEY`,
-`CONTACT_EMAIL_TO`, `CONTACT_EMAIL_FROM`. Без них `/api/contact` валидирует заявку
-и логирует её, но письмо не отправляет.
+Система поддерживает два режима, переключаемых одной переменной.
 
-## Деплой на Vercel
+**Серверный режим (Vercel).** Работает `POST /api/contact`: валидация имени, телефона и
+email, отправка письма через Resend. Нужны `RESEND_API_KEY`, `CONTACT_EMAIL_TO`,
+`CONTACT_EMAIL_FROM`. Без них заявка только логируется в консоль.
 
-Репозиторий привязан к проекту Vercel через `.vercel/repo.json`, поэтому каждый push в `main`
-собирает прод, а push в другую ветку — preview.
+**Статический режим (GitHub Pages).** Сервера нет, поэтому форма отправляет заявку
+напрямую в Web3forms. Нужен ключ `NEXT_PUBLIC_WEB3FORMS_KEY` — получить на
+https://web3forms.com. Без ключа форма показывает просьбу написать на почту.
+
+Ключ Web3forms для Pages хранится в настройках репозитория:
+`Settings → Secrets and variables → Actions → New repository variable → WEB3FORMS_KEY`.
+
+## Деплой
+
+Проект обслуживает два хостинга из одного репозитория. Режим выбирается переменной
+`STATIC_BUILD` в `next.config.ts`:
+
+| | Vercel | GitHub Pages |
+| --- | --- | --- |
+| `STATIC_BUILD` | не задана | `1` |
+| Рендер | серверный | статический экспорт в `out/` |
+| `basePath` | пусто | `/forma-home` |
+| Оптимизация картинок | да (AVIF/WebP) | нет, отдаются исходники |
+| `/api/contact` | работает | не экспортируется |
+| Заголовки безопасности | применяются | игнорируются платформой |
+| Форма | Resend | Web3forms |
+
+```bash
+npm run build              # серверная сборка, как на Vercel
+STATIC_BUILD=1 npm run build   # статический экспорт в out/
+```
+
+### GitHub Pages
+
+Деплой запускает `.github/workflows/deploy-pages.yml`: он собирает статику, прогоняет
+`typecheck` и выкладывает артефакт через `actions/deploy-pages`. Каждый push в `main`
+автоматически обновляет сайт. В `Settings → Pages → Build and deployment` источник
+должен быть `GitHub Actions`.
+
+Адрес: `https://ilya33836-cpu.github.io/forma-home/`.
+
+Pages доступен только для публичных репозиториев на бесплатном тарифе, поэтому
+`forma-home` должен быть публичным.
+
+### Vercel
 
 ```bash
 npm i -g vercel
 vercel login
-vercel link --repo     # привязка к репозиторию
-vercel deploy -y       # разовый деплой
+vercel link --repo
+vercel deploy --prod
 ```
 
-Переменные окружения задаются в Vercel Dashboard → Settings → Environment Variables:
-
-| Переменная | Нужна для |
-| --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | канонический домен в метаданных, sitemap и robots |
-| `RESEND_API_KEY` | отправка заявок с формы |
-| `CONTACT_EMAIL_TO` | адрес получателя заявок |
-| `CONTACT_EMAIL_FROM` | адрес отправителя (домен должен быть подтверждён в Resend) |
+Переменные окружения задаются в Vercel Dashboard → Settings → Environment Variables.
 
 Если `NEXT_PUBLIC_SITE_URL` не задан, на Vercel подставляется
-`VERCEL_PROJECT_PRODUCTION_URL`, а вне Vercel — `https://forma-home.ru`.
+`VERCEL_PROJECT_PRODUCTION_URL`, а на GitHub Pages — `https://ilya33836-cpu.github.io`.
 Значение читается на этапе сборки, поэтому после добавления переменной нужен редеплой.
-
-В `next.config.ts` выставлены заголовки безопасности: HSTS, `X-Content-Type-Options`,
-`X-Frame-Options`, `Referrer-Policy` и `Permissions-Policy`.
 
 Сборка: 15 статических страниц, First Load JS главной — 167 kB. 3D-сцена вынесена в отдельный
 чанк и грузится только при приближении секции, поэтому на первый экран не влияет.
+
+Проверить доступность сайта без VPN:
+
+```bash
+node scripts\host-check.mjs forma-home-gamma.vercel.app
+```
+
+Скрипт отличает блокировку по IP от блокировки по имени — см. раздел о доступности
+из России.
+
 

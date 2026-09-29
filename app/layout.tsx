@@ -23,7 +23,7 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(`${site.basePath}/`, site.url),
   title: {
     default: `${site.name} — ${site.tagline}`,
     template: `%s — ${site.name}`,
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     description: site.description,
     images: [
       {
-        url: '/opengraph-image',
+        url: '/og/og-home.jpg',
         width: 1200,
         height: 630,
         alt: `${site.name} — студия дизайна интерьеров`,
