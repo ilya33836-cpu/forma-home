@@ -19,7 +19,7 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
-  ...(isStatic ? { output: 'export' as const } : {}),
+  ...(isStatic ? { output: 'export' as const, trailingSlash: true } : {}),
   reactStrictMode: true,
   poweredByHeader: false,
   basePath,
